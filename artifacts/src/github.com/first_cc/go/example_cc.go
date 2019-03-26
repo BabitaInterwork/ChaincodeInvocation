@@ -77,13 +77,14 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 
     if function == "callAnotherCC" {
 
-       chainCodeArgs := util.ToChaincodeArgs("called", "Interwork")
+       chainCodeArgs := util.ToChaincodeArgs("store", "Interwork")
         response := stub.InvokeChaincode("mycc2",chainCodeArgs, "mychannel")
-
+		
         if response.Status != shim.OK {
            return shim.Error(response.Message)
         }
-        return shim.Success(nil)
+		return shim.Success(nil)
+		
     }
 
 	

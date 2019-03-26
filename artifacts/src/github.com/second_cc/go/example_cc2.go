@@ -20,7 +20,7 @@ package main
 import (
 	"fmt"
 	"strconv"
-
+	
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
@@ -80,9 +80,54 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.called(stub, args)
 	}
 
+	if function == "store" {
+		// Deletes an entity from its state
+		return t.store(stub, args)
+	}
+
 
 	logger.Errorf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0])
 	return shim.Error(fmt.Sprintf("Unknown action, check the first argument, must be one of 'delete', 'query', or 'move'. But got: %v", args[0]))
+}
+
+//write into chaincode 
+func (t *SimpleChaincode) store(stub shim.ChaincodeStubInterface, args []string) pb.Response {
+
+	if len(args) != 1 {
+
+		return shim.Error("Incorrect number of arguments. Expecting 1")
+		
+	}
+
+	logger.Info("#### welcome at  ",args[0])
+	var err error
+	// var Aval int // Asset holdings 
+	// 
+	// Aval, err = strconv.Atoi(args[0])
+	// if err != nil {
+	// 	return shim.Error("Expecting integer value for asset holding")
+	// }
+
+
+	// err = stub.PutState("message", []byte(strconv.Itoa(Aval)))
+	// if err != nil {
+	// 	return shim.Error(err.Error())
+	// }
+	
+	A:=args[0] 
+
+	err = stub.PutState("message",[]byte(A) )
+
+	if err != nil {
+
+		return shim.Error(err.Error())
+
+	}
+
+		logger.Info("############################ Successfully saved into the ledger state ##############################")
+	
+
+	return shim.Success(nil)
 }
 
 
